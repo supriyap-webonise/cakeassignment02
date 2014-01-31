@@ -9,13 +9,14 @@
 <?php $tr = '';
     foreach($result AS $key=>$value)
 {
+    if($value['Project']['end_date']>date('Y/m/d h:i:s')) $editallocate=1;else $editallocate=0;
 $tr .='<tr>
     <td width="15%" class="fontcolor">'.$this->Html->link($value["Project"]["name"],array('action'=>'edit','id'=>$value["Project"]["id"])).'</td>
     <td width="15%" class="fontcolor">'.$value['Project']['contact_person'].'</td>
     <td width="20%" class="fontcolor">'.$value['Project']['start_date'].'</td>
     <td width="20%" class="fontcolor">'.$value['Project']['end_date'].'</td>
-    <td width="5%" class="fontcolor">'.$this->Html->link($this->Html->image('/img/allocate.png',array('width'=>'20px','height'=>'30px')),array('action'=>'allocate','id'=>$value["Project"]["id"]),array('escape'=>false)).'</td>
+    <td width="5%" class="fontcolor">'.$this->Html->link($this->Html->image('/img/allocate.png',array('width'=>'20px','height'=>'30px')),array('action'=>'allocate','id'=>$value["Project"]["id"],'editallocate'=>$editallocate),array('escape'=>false)).'</td>
 </tr>';
  }
-    echo $tr;?>
+    echo $tr; ?>
 </table>

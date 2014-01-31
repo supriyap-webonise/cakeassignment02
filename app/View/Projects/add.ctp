@@ -60,13 +60,22 @@
 <script type="text/javascript">
     $('#datetimepicker').datetimepicker({
         format: 'yyyy-MM-dd hh:mm:ss',
+        startDate: new Date()
     });
     $('#datetimepicker1').datetimepicker({
         format: 'yyyy-MM-dd hh:mm:ss',
+        startDate: new Date()
     });
+
     $('#ProjectAddForm').submit(function(){
+        var CurrentDate = new Date();
+        if ($('#Projectstart_date').val() > $('#Projectend_date').val()) {
+            alert("End Date Must Be Greater Than Start Date!");
+            return false;
+        }
         if ( $("input:checked").length == 0) {
             return false;
         }
+
     });
 </script>
