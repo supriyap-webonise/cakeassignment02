@@ -4,11 +4,6 @@
     for($percent=5;$percent<=100;$percent=$percent+5){
         $percentArr[$percent] = $percent;
     }
-    if(isset($this->params['named']['editallcoate']) && $this->params['named']['editallcoate']==1)
-    {
-        $editallocate = 1;
-    }
-    else $editallocate = 0;
 ?>
     <table>
         <tr>
@@ -49,15 +44,7 @@
        		'disabled'=>'disabled',
        		'selected'=> $employeeallocate['work_load']
         ))."</td>";
-        if($editallocate==1)
-        {
             echo '<td>'. $this->Html->image('/img/edit.png',array('title'=>'Change Allocation','onclick'=>$editallocate)).'</td>';
-        }
-        else
-        {
-            $unallocateemp = '';
-            $title = 'Project Has Already Closed';
-        }
        echo '<td>'. $this->Html->image('/img/'.$img,array('title'=>$title,'onclick'=>$unallocateemp)).'</td></tr>';
     }
     ?>
