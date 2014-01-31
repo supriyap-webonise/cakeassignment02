@@ -9,7 +9,7 @@
 <?php $tr = '';
     foreach($result AS $key=>$value)
 {
-    if($value['Project']['end_date']>date('Y/m/d h:i:s')) $editallocate=1;else $editallocate=0;
+    if(strtotime($value['Project']['end_date'])>strtotime(date('Y/m/d h:i:s'))) $editallocate=1;else $editallocate=0;
 $tr .='<tr>
     <td width="15%" class="fontcolor">'.$this->Html->link($value["Project"]["name"],array('action'=>'edit','id'=>$value["Project"]["id"])).'</td>
     <td width="15%" class="fontcolor">'.$value['Project']['contact_person'].'</td>
