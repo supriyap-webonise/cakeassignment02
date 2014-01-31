@@ -10,9 +10,7 @@
             <td>Name</td>
             <td>Total Allocation</td>
             <td>Allocate To Project</td>
-            <?php if($editallocate==1) {?>
             <td>Change Allocation</td>
-            <?php } ?>
             <td>Allocate / Unallocate</td>
         </tr>
     <?php
