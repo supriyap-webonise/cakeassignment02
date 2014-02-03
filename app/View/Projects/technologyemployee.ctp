@@ -10,13 +10,19 @@
             <td>Name</td>
             <td>Total Allocation</td>
             <td>Allocate To Project</td>
+            <?php if($project_end_date > 0){?>
             <td>Change Allocation</td>
+                <?php } ?>
             <td>Allocate / Unallocate</td>
         </tr>
     <?php
     foreach ($tech_employee as $key=>$value) {
         echo  '<tr><td>'.$value['Employee']['name'].'</td>';
-       echo '<td>'.$value['Employee']['work_load'].'</td>';
+        $dangerClass = '';
+        if($value['Employee']['work_load'] > 100){
+        	$dangerClass = 'text-danger';
+        }
+       echo '<td class='.$dangerClass.'>'.$value['Employee']['work_load'].'</td>';
        $selname = 'allocation_unit_'.$value['Employee']['id'];
 
         $employeeallocate = $this->Project->getAllocationForProject($value['Employee']['id'],$project_id);
@@ -24,7 +30,12 @@
         {
             $img = 'test-fail-icon.png';
             $title = 'Allocated Employee';
-           $unallocateemp = 'allocate("'.$employeeallocate['work_load'].'",'.$value['Employee']['id'].')';
+            
+            if($project_end_date > 0){
+           		$unallocateemp = 'allocate("'.$employeeallocate['work_load'].'",'.$value['Employee']['id'].')';
+            }else{
+            	$unallocateemp ='';
+            }
         }
         else
         {
@@ -42,7 +53,9 @@
        		'disabled'=>'disabled',
        		'selected'=> $employeeallocate['work_load']
         ))."</td>";
-            echo '<td>'. $this->Html->image('/img/edit.png',array('title'=>'Change Allocation','onclick'=>$editallocate)).'</td>';
+        if($project_end_date > 0){
+           echo '<td>'. $this->Html->image('/img/edit.png',array('title'=>'Change Allocation','onclick'=>'allocate("'.$employeeallocate['work_load'].'",'.$value['Employee']['id'].')')).'</td>';
+        }
        echo '<td>'. $this->Html->image('/img/'.$img,array('title'=>$title,'onclick'=>$unallocateemp)).'</td></tr>';
     }
     ?>

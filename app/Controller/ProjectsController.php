@@ -9,8 +9,16 @@ class ProjectsController extends AppController
     }
     //get category list
     public function projectlist()
-    {
+    {	$contractid = '';
         $getcontracts = $this->Project->getcontracts();
+        $result = array();
+        if($this->Session->read('contractId') != ''){
+        	$contractid = $this->Session->read('contractId');
+        	$result = $this->Project->projectlist($contractid);
+        }
+        $this->set('contractid',$contractid);
+        $this->Session->write('contractId', '');
+        $this->set('result',$result);
         $this->set('getcontracts',$getcontracts);
     }
     //get Project list
@@ -54,6 +62,7 @@ class ProjectsController extends AppController
             $getdata = $this->Project->find('first',array('fields'=>array('Project.id','Project.name','Project.contact_person','Project.start_date','Project.end_date','Project.technology','Project.contract_id'),
                                                             'conditions'=>'Project.id='.$this->params['named']['id']));
             $getdata['Project']['technology']=explode(',',$getdata['Project']['technology']);
+            $this->Session->write('contractId', $getdata['Project']['contract_id']);
             $this->set('getdata',$getdata);
         }
         if($this->request->is('post'))
@@ -71,8 +80,9 @@ class ProjectsController extends AppController
     //allocated employee to particular project
     public function allocate()
     {
-    	$getTechId = $this->Project->find('first',array('fields'=>array('technology'),
+    	$getTechId = $this->Project->find('first',array('fields'=>array('technology','contract_id'),
                 		                    'conditions'=>'Project.id='.$this->params['named']['id']));
+    	$this->Session->write('contractId', $getTechId ['Project']['contract_id']);
         $technology = ClassRegistry::init('Technology')->gettechnology($getTechId ['Project']['technology']);
         $this->set('technology',$technology);
     }
@@ -82,7 +92,11 @@ class ProjectsController extends AppController
         $this->layout = 'ajax';
         $tech_employee = ClassRegistry::init('Employee')->find('all', array('fields'=>array('id','name','work_load'),
                                                                             'conditions'=>'Employee.technology_id='.$tech_id));
+        //Get project end date
+        $projectEndDate = $this->Project->find('first',array('fields'=>array('count(Project.id) as enddate'),
+                		                    'conditions'=>array('Project.id'=>$project_id,'Project.end_date >'=>date('Y-m-d H:i:s'))));
         $this->set('project_id',$project_id);
+        $this->set('project_end_date',$projectEndDate[0]['enddate']);
         $this->set('tech_id',$tech_id);
         $this->set('tech_employee',$tech_employee);
     }
@@ -100,15 +114,15 @@ class ProjectsController extends AppController
                                                                   'conditions'=>array('ProjectEmployee.projectid'=> $project_id,'ProjectEmployee.employeeid' => $user_id)));
     	if(!empty($allocationExists)){
     		$data['ProjectEmployee']['id'] = $allocationExists['ProjectEmployee']['id'];
-    		if($work_load > $allocationExists['ProjectEmployee']['allocate']){
+    		/*if($work_load > $allocationExists['ProjectEmployee']['allocate']){
     			$data['ProjectEmployee']['allocate'] = $allocationExists['ProjectEmployee']['allocate'] + $work_load;
     		}else{
     			$data['ProjectEmployee']['allocate'] = $allocationExists['ProjectEmployee']['allocate'] - $work_load;
-    		}
+    		}*/
     		
-    	}else{
+    	}//else{
     		$data['ProjectEmployee']['allocate'] = $work_load;
-    	}
+    	//}
     	
     	if($ProjectEmployee->save($data)){
     		//Calculate userwork load
