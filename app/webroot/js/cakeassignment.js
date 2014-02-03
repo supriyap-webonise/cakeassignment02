@@ -2,7 +2,7 @@
 function getprojects()
     {
         $.ajax({
-                    url: "categoryprojectlist/"+$('#contract_id').val(),
+                    url: "/projects/categoryprojectlist/"+$('#contract_id').val(),
                     type: "post"
                 }).done(function(response) {
                         $('#projecttable').html(response);
